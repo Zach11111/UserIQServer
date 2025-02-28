@@ -14,7 +14,7 @@ app.listen(port, () => {
 
 
   app.use(express.json());
-  app.post('/register', async (req, res) => {
+  app.post('/test', async (req, res) => {
     const id = req.body.id;
     const answers = req.body.answers;
     if (!id || !answers) {
