@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const scoreTest = require('./score');
-const { addUser, getUserIq, storeAuthToken, doesUserExist } = require('./utils')
+
 require('dotenv').config();
 
 const cors = require('cors');
@@ -9,7 +9,7 @@ const cors = require('cors');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
 const session = require('express-session');
-const { storeAuthToken, addUser, validateUser } = require('./db');
+const { storeAuthToken, addUser, validateUser, getUserIq, doesUserExist } = require('./db');
 
 const port = process.env.PORT || 3000;
 
@@ -20,10 +20,10 @@ passport.use(new DiscordStrategy({
     scope: ['identify', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        if (!doesUserExist(profile.id)) {
-            addUser(profile.id, accessToken);
+        if (!(await doesUserExist(profile.id))) {
+            await addUser(profile.id, accessToken);
         } else {
-            storeAuthToken(profile.id, accessToken);
+            await storeAuthToken(profile.id, accessToken);
         }
         done(null, profile);
     } catch (err) {
@@ -69,9 +69,6 @@ app.post('/test', async (req, res) => {
     }
     if (!id || !answers) {
         return res.status(400).sendStatus('Bad Request');
-    }
-    if (await doesUserIDExist(id.toString()) === false) {
-        return res.status(404).send('User not found');
     }
     try {
         const score = scoreTest(answers);

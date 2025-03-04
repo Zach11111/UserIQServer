@@ -16,8 +16,18 @@ db.serialize(() => {
 });
 
 function addUser(id, token) {
-    db.run("INSERT INTO users (id, token) VALUES (?, ?)", id, token)
+    console.log(id,token)
+    return new Promise((resolve, reject) => {
+        db.run("INSERT INTO users (id, token) VALUES (?, ?)", [id, token], function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
 }
+
 
 async function doesUserExist(id) {
     try {
