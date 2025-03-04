@@ -15,9 +15,27 @@ db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, iq INTEGER, token TEXT)");
 });
 
-function addUser(id, iq) {
-    db.run("INSERT INTO users (id, iq) VALUES (?, ?)", id, iq);
+function addUser(id, token) {
+    db.run("INSERT INTO users (id, token) VALUES (?, ?)", id, token)
 }
+
+async function doesUserExist(id) {
+    try {
+        const row = await new Promise((resolve, reject) => {
+            db.get("SELECT id FROM users WHERE id = ?", id, (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+        return row ? true : false;
+    } catch (err) {
+        throw err;
+    }
+}
+
 
 function getUserIq(id) {
     return new Promise((resolve, reject) => {
@@ -44,4 +62,29 @@ function storeAuthToken(userId, token) {
 }
 
 
-module.exports = { addUser, getUserIq, storeAuthToken };
+function validateUser(id, token) {
+    return new Promise((resolve, reject) => {
+        db.get("SELECT id FROM users WHERE id = ? AND token = ?", id, token, (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row ? true : false);
+            }
+        });
+    });
+}
+
+function setIq(id, iq) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE users SET iq = ? WHERE id = ?", iq, id, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+
+module.exports = { addUser, getUserIq, storeAuthToken, doesUserExist, validateUser, setIq };
