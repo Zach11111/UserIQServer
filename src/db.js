@@ -44,4 +44,4 @@ function storeAuthToken(userId, token) {
 }
 
 
-module.exports = { addUser, getUserIq };
+module.exports = { addUser, getUserIq, storeAuthToken };
