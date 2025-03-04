@@ -12,7 +12,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, iq INTEGER)");
+    db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, iq INTEGER, token TEXT)");
 });
 
 function addUser(id, iq) {
@@ -30,5 +30,18 @@ function getUserIq(id) {
         });
     });
 }
+
+function storeAuthToken(userId, token) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE users SET token = ? WHERE id = ?", token, userId, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
 
 module.exports = { addUser, getUserIq };
