@@ -78,6 +78,27 @@ app.post('/test', async (req, res) => {
     }
 });
 
+
+app.get('/iq', async (req, res) => {
+    const userId = req.headers.userid;
+    const token = req.headers.authorization;
+    const id = req.body.id
+    const isUserValid = await validateUser(userId, token);
+    if (!isUserValid) {
+        return res.status(401).send('Unauthorized');
+    }
+    try {
+        const iq = await getUserIq(id);
+        if (iq === null) {
+            return res.status(404).send('User Not Found');
+        }
+
+        return res.status(200).json({ iq });
+    } catch (error) {
+        return res.status(500).send('Internal Server Error');
+    }
+});
+
 app.get('/auth/discord', passport.authenticate('discord'));
 
 app.get('/auth/discord/callback', passport.authenticate('discord', {
