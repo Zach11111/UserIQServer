@@ -17,7 +17,7 @@ passport.use(new DiscordStrategy({
     clientID: process.env.DISCORD_CLIENT_ID,
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
     callbackURL: process.env.DISCORD_REDIRECT_URI,
-    scope: ['identify', 'email']
+    scope: ['identify']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         if (!(await doesUserExist(profile.id))) {
@@ -63,18 +63,20 @@ app.post('/test', async (req, res) => {
     const answers = req.body.answers;
     const token = req.headers.authorization;
     const userId = req.headers.userid;
+
+    console.log('User ID:', userId, 'Token:', token, "Answers:", answers);
     const isUserValid = await validateUser(userId, token);
     if (!isUserValid) {
-        return res.status(401).send('Unauthorized');
+        return res.status(401);
     }
     if (!id || !answers) {
-        return res.status(400).sendStatus('Bad Request');
+        return res.status(400);
     }
     try {
         const score = scoreTest(answers);
         return res.status(200).json({ score });
     } catch (error) {
-        return res.status(500).sendStatus('Internal Server Error');
+        return res.status(500);
     }
 });
 
@@ -105,7 +107,7 @@ app.get('/auth/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), (req, res) => {
     const accessToken = req.user ? req.user.accessToken : null;
-    
+
     if (accessToken) {
         return res.json({ token: accessToken });
     } else {
