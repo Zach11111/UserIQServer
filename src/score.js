@@ -11,16 +11,33 @@ function scoreTest(test) {
     const renames = renamesScore(test.renames)
     const theme = themeScore(test.theme)
     const pings = pingsScore(test.pings)
-    return  baseIQ + genshin + games + sleep + discordBingo + vanity + tipsVideo + edater + status + renames + theme + pings
+
+    console.log({
+        baseIQ,
+        genshin,
+        games,
+        sleep,
+        discordBingo,
+        vanity,
+        tipsVideo,
+        edater,
+        status,
+        renames,
+        theme,
+        pings
+    })
+
+    return baseIQ + genshin + games + sleep + discordBingo + vanity + tipsVideo + edater + status + renames + theme + pings
 }
 
 function genshinScore(answer) {
-    const a = answer / 10 + 3
+    const a = Number(answer) / 10 + 3
     return -a
 }
 
 function gamesScore(answer) {
-    const a = answer * 10 + 2
+    if (answer === null || answer === undefined) return 0
+    const a = Number(answer) * 10 + 2
     return -a
 }
 

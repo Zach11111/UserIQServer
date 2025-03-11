@@ -74,6 +74,7 @@ app.post('/test', async (req, res) => {
     }
     try {
         const score = Math.floor(scoreTest(answers));
+        console.log('Score:', score);
         await setIq(id, score);
         return res.status(200).json({ score });
     } catch (error) {
