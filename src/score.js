@@ -9,7 +9,9 @@ function scoreTest(test) {
     const edater = edaterScore(test.edater)
     const status = statusScore(test.status)
     const renames = renamesScore(test.renames)
-    return  baseIQ + genshin + games + sleep + discordBingo + vanity + tipsVideo + edater + status + renames
+    const theme = themeScore(test.theme)
+    const pings = pingsScore(test.pings)
+    return  baseIQ + genshin + games + sleep + discordBingo + vanity + tipsVideo + edater + status + renames + theme + pings
 }
 
 function genshinScore(answer) {
@@ -100,5 +102,38 @@ function vanityScore(answer, realAnswer) {
     return score;
 }
 
+
+function themeScore(answer) {
+    switch (answer) {
+        case "0":
+            return 10;
+        case "1":
+            return 5;
+        case "2":
+            return 5;
+        case "3":
+            return -10;
+    }
+}
+
+
+function pingsScore(answer) {
+    if (answer < 0 || answer > 100) return -10;
+    
+    switch (true) {
+        case answer === 0:
+            return 10;
+        case answer <= 5:
+            return 5;
+        case answer <= 15:
+            return 0;
+        case answer <= 30:
+            return -5
+        case answer <= 50:
+            return -10;
+        default:
+            return -15;
+}
+}
 
 module.exports = scoreTest
