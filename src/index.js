@@ -9,7 +9,7 @@ const cors = require('cors');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
 const session = require('express-session');
-const { storeAuthToken, addUser, validateUser, getUserIq, doesUserExist } = require('./db');
+const { storeAuthToken, addUser, validateUser, getUserIq, doesUserExist, setIq } = require('./db');
 
 const port = process.env.PORT || 3000;
 
@@ -73,7 +73,8 @@ app.post('/test', async (req, res) => {
         return res.status(400);
     }
     try {
-        const score = scoreTest(answers);
+        const score = Math.floor(scoreTest(answers));
+        await setIq(id, score);
         return res.status(200).json({ score });
     } catch (error) {
         return res.status(500);
@@ -84,15 +85,13 @@ app.post('/test', async (req, res) => {
 app.get('/iq', async (req, res) => {
     const userId = req.headers.userid;
     const token = req.headers.authorization;
-    const id = req.body.id
+    const id = req.headers.userid
     const isUserValid = await validateUser(userId, token);
-    if (!isUserValid) {
-        return res.status(401).send('Unauthorized');
-    }
+    console.log("get iq request");
     try {
         const iq = await getUserIq(id);
         if (iq === null) {
-            return res.status(404).send('User Not Found');
+            return res.status(200).json({ error: 'User not found' });
         }
 
         return res.status(200).json({ iq });

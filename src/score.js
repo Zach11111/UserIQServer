@@ -5,7 +5,11 @@ function scoreTest(test) {
     const sleep = sleepScore(test.sleep)
     const discordBingo = discordBingoScore(test.discordBingo)
     const vanity = vanityScore(test.vanity, test.vanityUrlNum)
-    return  baseIQ + genshin + games + sleep + discordBingo + vanity
+    const tipsVideo = tipsVideoScores(test.tipsvideos)
+    const edater = edaterScore(test.edater)
+    const status = statusScore(test.status)
+    const renames = renamesScore(test.renames)
+    return  baseIQ + genshin + games + sleep + discordBingo + vanity + tipsVideo + edater + status + renames
 }
 
 function genshinScore(answer) {
@@ -39,6 +43,53 @@ function discordBingoScore(answer) {
     return answer.split(',').reduce((sum, num) => sum + (scores[num] || 0), 0)
 }
 
+
+function tipsVideoScores(answer) {
+    if (answer === "0") return 0;
+    if (answer === "1") return 10;
+}
+
+function edaterScore(answer) {
+
+    switch (answer) {
+        case "0":
+            return -5;
+        case "1":
+            return -10;
+        case "2":
+            return 5;
+        case "3":
+            return 6;
+    }
+
+
+}
+
+function statusScore(answer) {
+    switch (answer) {
+        case "0":
+            return 10;
+        case "1":
+            return 5;
+        case "2":
+            return -5;
+        case "3":
+            return -10;
+    }
+}
+
+function renamesScore(answer) {
+    switch (answer) {
+        case "0":
+            return 10;
+        case "1":
+            return 5;
+        case "2":
+            return -5;
+        case "3":
+            return -7;
+    }
+}
 
 function vanityScore(answer, realAnswer) {
     let score = -realAnswer * 12;
