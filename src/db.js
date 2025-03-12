@@ -103,10 +103,15 @@ function getAllIqs() {
             if (err) {
                 reject(err);
             } else {
-                resolve(rows);
+                const iqMap = rows.reduce((acc, row) => {
+                    acc[row.id] = row.iq;
+                    return acc;
+                }, {});
+                resolve(iqMap);
             }
         });
     });
 }
+
 
 module.exports = { addUser, getUserIq, storeAuthToken, doesUserExist, validateUser, setIq, getAllIqs};
