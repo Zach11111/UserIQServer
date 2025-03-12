@@ -9,7 +9,7 @@ const cors = require('cors');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
 const session = require('express-session');
-const { storeAuthToken, addUser, validateUser, getUserIq, doesUserExist, setIq } = require('./db');
+const { storeAuthToken, addUser, validateUser, getUserIq, doesUserExist, setIq, getAllIqs } = require('./db');
 
 const port = process.env.PORT || 3000;
 
@@ -100,6 +100,16 @@ app.get('/iq', async (req, res) => {
         return res.status(500).send('Internal Server Error');
     }
 });
+
+
+app.get('/iqs', async (req, res) => {
+    try {
+        const iqs = await getAllIqs();
+        return res.status(200).json(iqs);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
 
 app.get('/auth/discord', passport.authenticate('discord'));
 

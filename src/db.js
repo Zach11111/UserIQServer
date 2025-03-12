@@ -97,4 +97,16 @@ function setIq(id, iq) {
 }
 
 
-module.exports = { addUser, getUserIq, storeAuthToken, doesUserExist, validateUser, setIq };
+function getAllIqs() {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT id, iq FROM users", (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+module.exports = { addUser, getUserIq, storeAuthToken, doesUserExist, validateUser, setIq, getAllIqs};
