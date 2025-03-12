@@ -70,16 +70,13 @@ function tipsVideoScores(answer) {
 
 function edaterScore(answer) {
 
-    switch (answer) {
-        case "0":
-            return -5;
-        case "1":
-            return -10;
-        case "2":
-            return 5;
-        case "3":
-            return 6;
+    const scores = {
+        1: -5,
+        2: -10,
+        3: 5,
+        4: 6
     }
+    return answer.split(',').reduce((sum, num) => sum + (scores[num] || 0), 0)
 
 
 }
