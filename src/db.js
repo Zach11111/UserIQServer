@@ -12,7 +12,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, iq INTEGER, token TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, iq INTEGER, token TEXT)");
 });
 
 function addUser(id, token) {
@@ -104,7 +104,7 @@ function getAllIqs() {
                 reject(err);
             } else {
                 const iqMap = rows.reduce((acc, row) => {
-                    acc[row.id] = row.iq;
+                    acc[String(row.id)] = row.iq;
                     return acc;
                 }, {});
                 resolve(iqMap);
@@ -112,6 +112,7 @@ function getAllIqs() {
         });
     });
 }
+
 
 
 module.exports = { addUser, getUserIq, storeAuthToken, doesUserExist, validateUser, setIq, getAllIqs};
